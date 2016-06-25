@@ -1,13 +1,13 @@
 /*jshint esversion: 6*/
 
 const BenchApiUtil = {
-  fetchAllBenches: function() {
+  fetchAllBenches: function(success) {
     $.ajax({
       type: 'GET',
       url: '/api/benches',
       dataType: 'JSON',
-      success: function(response) {
-        console.log(response);
+      success: function(benches) {
+        success(benches);
       }
     });
   }
