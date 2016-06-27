@@ -1,7 +1,7 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-var BenchIndex = require('./components/bench_index');
+var Search = require('./components/search');
 
 document.addEventListener('DOMContentLoaded', function() {
-  ReactDOM.render(<BenchIndex></BenchIndex>, document.getElementById('content'));
+  ReactDOM.render(<Search></Search>, document.getElementById('content'));
 })
