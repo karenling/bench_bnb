@@ -16,7 +16,6 @@ var BenchIndex = React.createClass({
   },
   componentDidMount: function() {
     BenchStore.addListener(this._handleChange);
-    BenchActions.fetchAllBenches();
   },
   render: function() {
     return(
@@ -26,8 +25,6 @@ var BenchIndex = React.createClass({
         }.bind(this))}
       </div>
     )
-
-
   }
 });
 
