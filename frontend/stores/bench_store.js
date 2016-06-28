@@ -19,7 +19,10 @@ BenchStore.__onDispatch = function(payload) {
 };
 
 function resetAllBenches(benches) {
-  _benches = benches;
+  _benches = {}
+  benches.forEach(function(bench) {
+    _benches[bench.id] = bench
+  })
   BenchStore.__emitChange();
 }
 
