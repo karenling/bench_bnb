@@ -1,6 +1,6 @@
 class Api::BenchesController < ApplicationController
   def index
-    render json: Bench.all
+    render json: Bench.in_bounds(params[:bounds])
   end
 
   def create

@@ -2,6 +2,10 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var BenchStore = require('../stores/bench_store');
 var BenchActions = require('../actions/bench_actions')
+
+var _parseBounds = function(bound) {
+  return { lat: bound.lat(), lng: bound.lng() }
+}
 var BenchMap = React.createClass({
   getInitialState: function() {
     return({
@@ -26,7 +30,11 @@ var BenchMap = React.createClass({
     };
     this.map = new google.maps.Map(mapDOMNode, mapOptions);
     this.map.addListener('idle', function() {
-      BenchActions.fetchAllBenches();
+      var bounds = this.getBounds();
+      var northEast = _parseBounds(bounds.getNorthEast());
+      var southWest = _parseBounds(bounds.getSouthWest());
+      var parsedBounds = { northEast: northEast, southWest: southWest}
+      BenchActions.fetchAllBenches(parsedBounds);
     })
   },
   addNewMarker: function(lat, lng) {
