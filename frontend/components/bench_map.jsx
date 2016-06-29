@@ -2,6 +2,7 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var BenchStore = require('../stores/bench_store');
 var BenchActions = require('../actions/bench_actions')
+var MarkerStore = require('../stores/marker_store');
 
 var _parseBounds = function(bound) {
   return { lat: bound.lat(), lng: bound.lng() }
@@ -9,12 +10,14 @@ var _parseBounds = function(bound) {
 var BenchMap = React.createClass({
   getInitialState: function() {
     return({
-      benches: BenchStore.all()
+      benches: BenchStore.all(),
+      markers: MarkerStore.all()
     })
   },
   _onChange: function() {
     this.setState({
-      benches: BenchStore.all()
+      benches: BenchStore.all(),
+      markers: MarkerStore.all()
     })
     Object.keys(this.state.benches).map(function(benchId) {
       var bench = this.state.benches[benchId];
@@ -29,7 +32,6 @@ var BenchMap = React.createClass({
       center: {lat: 37.7758, lng: -122.435}, // this is SF
       zoom: 13
     };
-    this.markers = []
     this.map = new google.maps.Map(mapDOMNode, mapOptions);
     this.map.addListener('idle', function() {
       var bounds = this.getBounds();
@@ -45,19 +47,18 @@ var BenchMap = React.createClass({
       map: this.map,
       benchId: bench.id
     });
-    this.markers.push(marker);
+    MarkerStore.addMarker(marker);
   },
   markersToRemove: function() {
-    this.markers.filter(function(marker) {
+    this.state.markers.filter(function(marker) {
       if (Object.keys(this.state.benches).indexOf(marker.benchId.toString()) === -1) {
         this.removeMarker(marker);
       }
     }.bind(this));
   },
   removeMarker: function(marker) {
-    var idx = this.markers.indexOf(marker);
-    this.markers[idx].setMap(null);
-    this.markers.splice(idx, 1)
+    var idx = this.state.markers.indexOf(marker);
+    MarkerStore.removeMarker(idx);
   },
   render: function() {
     return(
