@@ -3,7 +3,7 @@
 const Store = require('flux/utils').Store;
 const AppDispatcher = require('../dispatcher/dispatcher');
 const MarkerStore = new Store(AppDispatcher);
-let _markers = [];
+let _markers = {};
 
 MarkerStore.all = function() {
   return _markers;
@@ -14,28 +14,20 @@ MarkerStore.__onDispatch = function(payload) {
 };
 
 MarkerStore.addMarker = function(marker) {
-  _markers.push(marker);
+  _markers[marker.benchId] = marker;
 };
 
-MarkerStore.removeMarker = function(idx) {
-  _markers[idx].setMap(null);
-  _markers.splice(idx, 1);
+MarkerStore.removeMarker = function(marker) {
+  _markers[marker.benchId].setMap(null);
+  delete _markers[marker.benchId]
 };
 
 MarkerStore.highlightMarker = function(benchId) {
-  _markers.forEach(function(marker) {
-    if (marker.benchId === benchId) {
-      marker.setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
-    }
-  });
+  _markers[benchId].setIcon('http://maps.google.com/mapfiles/ms/icons/green-dot.png');
 };
 
 MarkerStore.resetHighlight = function(benchId) {
-  _markers.forEach(function(marker) {
-    if (marker.benchId === benchId) {
-      marker.setIcon();
-    }
-  });
+  _markers[benchId].setIcon('http://maps.google.com/mapfiles/ms/icons/red-dot.png');
 };
 
 module.exports = MarkerStore;

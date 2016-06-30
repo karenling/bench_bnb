@@ -45,20 +45,20 @@ var BenchMap = React.createClass({
     var marker = new google.maps.Marker({
       position: {lat: bench.lat, lng: bench.lng},
       map: this.map,
-      benchId: bench.id
+      benchId: bench.id,
+      icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
     });
     MarkerStore.addMarker(marker);
   },
   markersToRemove: function() {
-    this.state.markers.filter(function(marker) {
-      if (Object.keys(this.state.benches).indexOf(marker.benchId.toString()) === -1) {
-        this.removeMarker(marker);
+    Object.keys(this.state.markers).filter(function(id){
+      if (Object.keys(this.state.benches).indexOf(id) === -1) {
+        this.removeMarker(this.state.markers[id]);
       }
-    }.bind(this));
+    }.bind(this))
   },
   removeMarker: function(marker) {
-    var idx = this.state.markers.indexOf(marker);
-    MarkerStore.removeMarker(idx);
+    MarkerStore.removeMarker(marker);
   },
   render: function() {
     return(
