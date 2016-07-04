@@ -3,6 +3,7 @@ var ReactDOM = require('react-dom');
 var BenchStore = require('../stores/bench_store');
 var BenchActions = require('../actions/bench_actions')
 var MarkerStore = require('../stores/marker_store');
+var hashHistory = require('react-router').hashHistory;
 
 var _parseBounds = function(bound) {
   return { lat: bound.lat(), lng: bound.lng() }
@@ -25,6 +26,13 @@ var BenchMap = React.createClass({
     }.bind(this))
     this.markersToRemove();
   },
+  _handleMapClick: function(coords) {
+    var formattedCoords = {lat: coords.lat(), lng: coords.lng()}
+    hashHistory.push({
+      pathname: 'benches/new',
+      query: formattedCoords
+    });
+  },
   componentDidMount: function() {
     BenchStore.addListener(this._onChange);
     const mapDOMNode = ReactDOM.findDOMNode(this.refs.map);
@@ -40,6 +48,9 @@ var BenchMap = React.createClass({
       var parsedBounds = { northEast: northEast, southWest: southWest}
       BenchActions.fetchAllBenches(parsedBounds);
     })
+    this.map.addListener('click', function(e) {
+      this._handleMapClick(e.latLng);
+    }.bind(this))
   },
   addNewMarker: function(bench) {
     var marker = new google.maps.Marker({

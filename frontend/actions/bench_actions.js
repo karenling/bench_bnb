@@ -13,6 +13,15 @@ const BenchActions = {
       actionType: BenchConstants.BENCHES_RECEIVED,
       benches: benches
     });
+  },
+  createBench: function(data) {
+    BenchApiUtil.createBench(data, this.receiveBench);
+  },
+  receiveBench: function(bench) {
+    AppDispatcher.dispatch({
+      actionType: BenchConstants.BENCH_RECEIVED,
+      bench: bench
+    });
   }
 };
 

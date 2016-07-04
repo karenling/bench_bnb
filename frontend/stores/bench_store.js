@@ -15,14 +15,22 @@ BenchStore.__onDispatch = function(payload) {
     case BenchConstants.BENCHES_RECEIVED:
       resetAllBenches(payload.benches);
       break;
+    case BenchConstants.BENCH_RECEIVED:
+      addBench(payload.bench);
+      break;
   }
 };
 
 function resetAllBenches(benches) {
-  _benches = {}
+  _benches = {};
   benches.forEach(function(bench) {
-    _benches[bench.id] = bench
-  })
+    _benches[bench.id] = bench;
+  });
+  BenchStore.__emitChange();
+}
+
+function addBench(bench) {
+  _benches[bench.id] = bench;
   BenchStore.__emitChange();
 }
 

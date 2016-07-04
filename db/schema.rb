@@ -11,15 +11,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160625210556) do
+ActiveRecord::Schema.define(version: 20160704035022) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "benches", force: :cascade do |t|
-    t.text  "description"
-    t.float "lat"
-    t.float "lng"
+    t.text    "description"
+    t.float   "lat"
+    t.float   "lng"
+    t.integer "seating"
   end
 
 end
