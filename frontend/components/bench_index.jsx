@@ -4,24 +4,13 @@ var BenchActions = require('../actions/bench_actions');
 var BenchIndexItem = require('./bench_index_item');
 
 var BenchIndex = React.createClass({
-  getInitialState: function() {
-    return({
-      benches: BenchStore.all()
-    });
-  },
-  _handleChange: function() {
-    this.setState({
-      benches: BenchStore.all()
-    });
-  },
-  componentDidMount: function() {
-    BenchStore.addListener(this._handleChange);
-  },
   render: function() {
     return(
       <div>
-        { Object.keys(this.state.benches).map(function(benchId) {
-          return <BenchIndexItem key={ benchId } bench={ this.state.benches[benchId] }></BenchIndexItem>
+        { Object.keys(this.props.benches).map(function(benchId) {
+          return <BenchIndexItem
+            key={ benchId }
+            bench={this.props.benches[benchId]} />
         }.bind(this))}
       </div>
     )

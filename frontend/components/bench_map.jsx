@@ -1,6 +1,5 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-var BenchStore = require('../stores/bench_store');
 var BenchActions = require('../actions/bench_actions')
 var MarkerStore = require('../stores/marker_store');
 var hashHistory = require('react-router').hashHistory;
@@ -11,17 +10,12 @@ var _parseBounds = function(bound) {
 var BenchMap = React.createClass({
   getInitialState: function() {
     return({
-      benches: BenchStore.all(),
       markers: MarkerStore.all()
     })
   },
   _onChange: function() {
-    this.setState({
-      benches: BenchStore.all(),
-      markers: MarkerStore.all()
-    })
-    Object.keys(this.state.benches).map(function(benchId) {
-      var bench = this.state.benches[benchId];
+    Object.keys(this.props.benches).map(function(benchId) {
+      var bench = this.props.benches[benchId];
       this.addNewMarker(bench);
     }.bind(this))
     this.markersToRemove();
@@ -33,24 +27,31 @@ var BenchMap = React.createClass({
       query: formattedCoords
     });
   },
+  componentDidUpdate: function() {
+    this._onChange();
+  },
   componentDidMount: function() {
-    BenchStore.addListener(this._onChange);
     const mapDOMNode = ReactDOM.findDOMNode(this.refs.map);
     const mapOptions = {
       center: {lat: 37.7758, lng: -122.435}, // this is SF
       zoom: 13
     };
     this.map = new google.maps.Map(mapDOMNode, mapOptions);
-    this.map.addListener('idle', function() {
+    this.mapIdleListener = this.map.addListener('idle', function() {
       var bounds = this.getBounds();
       var northEast = _parseBounds(bounds.getNorthEast());
       var southWest = _parseBounds(bounds.getSouthWest());
       var parsedBounds = { northEast: northEast, southWest: southWest}
       BenchActions.fetchAllBenches(parsedBounds);
     })
-    this.map.addListener('click', function(e) {
+    this.mapClickListener = this.map.addListener('click', function(e) {
       this._handleMapClick(e.latLng);
     }.bind(this))
+    this._onChange();
+  },
+  componentWillUnmount: function() {
+    google.maps.event.removeListener(this.mapIdleListener);
+    google.maps.event.removeListener(this.mapClickListener);
   },
   addNewMarker: function(bench) {
     var marker = new google.maps.Marker({
@@ -63,7 +64,7 @@ var BenchMap = React.createClass({
   },
   markersToRemove: function() {
     Object.keys(this.state.markers).filter(function(id){
-      if (Object.keys(this.state.benches).indexOf(id) === -1) {
+      if (Object.keys(this.props.benches).indexOf(id) === -1) {
         this.removeMarker(this.state.markers[id]);
       }
     }.bind(this))

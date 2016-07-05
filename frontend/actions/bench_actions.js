@@ -3,6 +3,7 @@
 const BenchApiUtil = require('../util/bench_api_util');
 const AppDispatcher = require('../dispatcher/dispatcher');
 const BenchConstants = require('../constants/bench_constants');
+const hashHistory = require('react-router').hashHistory;
 
 const BenchActions = {
   fetchAllBenches: function(bounds) {
@@ -21,6 +22,9 @@ const BenchActions = {
     AppDispatcher.dispatch({
       actionType: BenchConstants.BENCH_RECEIVED,
       bench: bench
+    });
+    hashHistory.push({
+      pathname: '/'
     });
   }
 };
